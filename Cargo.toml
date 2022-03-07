@@ -2,6 +2,13 @@
 name = "algexenotation"
 version = "0.1.0"
 edition = "2021"
+authors = ["bvssvni <bvssvni@gmail.com>"]
+keywords = ["mathematics", "number", "theory", "advancedresearch"]
+description = "An implementation of Algexenotation in Rust"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/advancedresearch/algexenotation.git"
+homepage = "https://github.com/advancedresearch/algexenotation"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
