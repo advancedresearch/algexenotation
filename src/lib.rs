@@ -200,6 +200,7 @@ fn hyperprime(n: u64) -> u64 {
 macro_rules! ax {
     ( $x:literal % ) => {Algexeno::Orig($x)};
     ( $x:literal ) => {Algexeno::Const($x)};
+    ( $x:ident ) => {Algexeno::Const($x)};
     ( ( $x:tt + $($y:tt)+ ) ) => {Algexeno::Bin(Op::Add, Box::new((ax!($x), ax!($($y)+))))};
     ( $x:tt + $($y:tt)+ ) => {Algexeno::Bin(Op::Add, Box::new((ax!($x), ax!($($y)+))))};
     ( ( $($x:tt)+ ) * $($y:tt)+ ) => {Algexeno::Bin(Op::Mul, Box::new((ax!($($x)+), ax!($($y)+))))};
