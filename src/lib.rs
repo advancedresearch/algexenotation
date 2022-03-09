@@ -193,6 +193,25 @@ pub fn hyperprime(n: u64) -> u64 {
     }
 }
 
+/// Computes a hyperprime.
+///
+/// Returns an index offset in second component to speed up computation.
+pub fn fast_hyperprime(n: u64) -> (u64, u64) {
+    if n == 0 {(2, 2)}
+    else {
+        let (p0, mut i) = fast_hyperprime(n - 1);
+        let p = p0 + 1;
+        let mut k = p0;
+        loop {
+            if fermat_prime(k) {
+                if i == p {return (k, i)};
+                i += 1;
+            }
+            k += 1;
+        }
+    }
+}
+
 /// Determines whether `p` is a prime using Fermat's primality test.
 pub fn fermat_prime(p: u64) -> bool {
     if p < 2 {return false}
@@ -269,6 +288,12 @@ mod tests {
         assert_eq!(hyperprime(2), 5);
         assert_eq!(hyperprime(3), 11);
         assert_eq!(hyperprime(4), 31);
+
+        assert_eq!(fast_hyperprime(0), (2, 2));
+        assert_eq!(fast_hyperprime(1), (3, 3));
+        assert_eq!(fast_hyperprime(2), (5, 4));
+        assert_eq!(fast_hyperprime(3), (11, 6));
+        assert_eq!(fast_hyperprime(4), (31, 12));
     }
 
     #[test]
