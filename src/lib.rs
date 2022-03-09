@@ -596,8 +596,27 @@ mod tests {
 
     #[test]
     fn test_count() {
+        assert_eq!(count_primes(2), 0);
+
         for i in 0..100 {
             assert_eq!(count_primes(i), count_primes_with_lookup(i));
         }
+    }
+
+    #[test]
+    fn test_prime() {
+        for i in 0..100 {
+            println!("{}", i);
+            assert_eq!(prime(i), prime_with_lookup(i));
+        }
+    }
+
+    #[test]
+    fn test_nth_prime() {
+        assert_eq!(nth_prime_with_lookup(0), 2);
+        assert_eq!(nth_prime_with_lookup(1), 3);
+        assert_eq!(nth_prime_with_lookup(2), 5);
+        assert_eq!(nth_prime_with_lookup(3), 7);
+        assert_eq!(nth_prime_with_lookup(4), 11);
     }
 }
