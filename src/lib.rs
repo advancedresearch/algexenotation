@@ -101,7 +101,7 @@ impl Algexeno {
             Orig(2) => Const(0),
             Orig(x) if prime(*x) => {
                 Bin(Add, Box::new((
-                    Const(1), Orig(count_primes(*x) + 1).eval()
+                    Const(1), Orig(count_primes_with_lookup(*x) + 1).eval()
                 ))).eval()
             }
             Orig(x) => {
