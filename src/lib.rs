@@ -51,7 +51,7 @@ impl Algexeno {
     pub fn original(&self) -> Algexeno {
         match self {
             Orig(x) => Orig(*x),
-            Const(x) => Orig(hyperprime(*x)),
+            Const(x) => Orig(fast_hyperprime_with_lookup(*x).0),
             Bin(Add, ab) => {
                 match (&ab.0, &ab.1) {
                     (Const(a), Const(b)) => Const(a + b).original(),
