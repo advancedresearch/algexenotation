@@ -159,6 +159,7 @@ impl Algexeno {
 }
 
 fn prime(n: u64) -> bool {
+    if n < 2 {return false};
     for i in 2..n {
         if n % i == 0 {return false}
     }
@@ -177,8 +178,8 @@ fn hyperprime(n: u64) -> u64 {
     if n == 0 {2}
     else {
         let p = hyperprime(n - 1) + 1;
-        let mut k = 0;
-        let mut i = 0;
+        let mut k = 2;
+        let mut i = 2;
         loop {
             if prime(k) {
                 if i == p {return k};
