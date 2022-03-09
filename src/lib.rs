@@ -247,6 +247,23 @@ pub fn prime(n: u64) -> bool {
     true
 }
 
+/// Counts primes with lookup.
+pub fn count_primes_with_lookup(x: u64) -> u64 {
+    let mut n = 0;
+    let mut last: Option<u64> = None;
+    while let Some(i) = prime_lookup(n) {
+        if i >= x {return n};
+        n += 1;
+        last = Some(i);
+    }
+    if let Some(last) = last {
+        for i in last..x {
+            if prime(i) {n += 1}
+        }
+    }
+    n
+}
+
 /// Counts primes below `x`.
 pub fn count_primes(x: u64) -> u64 {
     if x <= 2 {return 0};
@@ -539,5 +556,12 @@ mod tests {
         ))));
 
         assert_eq!(ax!(0^(0^0)).original(), Orig(16));
+    }
+
+    #[test]
+    fn test_count() {
+        for i in 0..100 {
+            assert_eq!(count_primes(i), count_primes_with_lookup(i));
+        }
     }
 }
