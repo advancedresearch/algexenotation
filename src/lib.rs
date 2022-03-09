@@ -193,6 +193,38 @@ pub fn hyperprime(n: u64) -> u64 {
     }
 }
 
+/// Provides lookup knowledge of fast hyperprime.
+pub fn fast_hyperprime_lookup(n: u64) -> Option<(u64, u64)> {
+    match n {
+        0 => Some((2, 2)),
+        1 => Some((3, 3)),
+        2 => Some((5, 4)),
+        3 => Some((11, 6)),
+        4 => Some((31, 12)),
+        5 => Some((127, 32)),
+        6 => Some((709, 128)),
+        7 => Some((5381, 710)),
+        _ => None,
+    }
+}
+
+/// Gets fast hyperprime with lookup.
+pub fn fast_hyperprime_with_lookup(n: u64) -> (u64, u64) {
+    if let Some(x) = fast_hyperprime_lookup(n) {x}
+    else {
+        let (p0, mut i) = fast_hyperprime_with_lookup(n - 1);
+        let p = p0 + 1;
+        let mut k = p0;
+        loop {
+            if fermat_prime(k) {
+                if i == p {return (k, i)};
+                i += 1;
+            }
+            k += 1;
+        }
+    }
+}
+
 /// Computes a hyperprime.
 ///
 /// Returns an index offset in second component to speed up computation.
