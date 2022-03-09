@@ -273,7 +273,7 @@ pub fn fast_hyperprime_with_lookup(n: u64) -> (u64, u64) {
         let p = p0 + 1;
         let mut k = p0;
         loop {
-            if fermat_prime(k) {
+            if prime_with_lookup(k) {
                 if i == p {return (k, i)};
                 i += 1;
             }
