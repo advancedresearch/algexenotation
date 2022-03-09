@@ -57,16 +57,7 @@ impl Algexeno {
                     (Const(a), Const(b)) => Const(a + b).original(),
                     (Const(1), b) => {
                         if let Orig(b) = b.original() {
-                            let mut p = 2;
-                            let mut i = 0;
-                            loop {
-                                if prime(p) {
-                                    i += 1;
-                                    if i == b {break}
-                                }
-                                p += 1;
-                            }
-                            Orig(p)
+                            Orig(nth_prime_with_lookup(b - 1))
                         } else {unreachable!()}
                     }
                     (Const(a), b) => {
