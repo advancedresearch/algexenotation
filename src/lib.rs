@@ -158,7 +158,8 @@ impl Algexeno {
     }
 }
 
-fn prime(n: u64) -> bool {
+/// Returns `true` if `n` is a prime.
+pub fn prime(n: u64) -> bool {
     if n < 2 {return false};
     for i in 2..n {
         if n % i == 0 {return false}
@@ -166,7 +167,8 @@ fn prime(n: u64) -> bool {
     true
 }
 
-fn count_primes(x: u64) -> u64 {
+/// Counts primes below `x`.
+pub fn count_primes(x: u64) -> u64 {
     let mut n = 1;
     for i in 2..x {
         if prime(i) {n += 1}
