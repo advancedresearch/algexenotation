@@ -158,6 +158,22 @@ impl Algexeno {
     }
 }
 
+/// Gets the nth prime with lookup table.
+pub fn nth_prime_with_lookup(n: u64) -> u64 {
+    if let Some(x) = nth_prime_lookup(n) {x}
+    else {
+        let (mut p, mut i) = last_in_prime_lookup();
+        p += 1;
+        loop {
+            if prime_with_lookup(p) {
+                if i == n {return p};
+                i += 1;
+            }
+            p += 1;
+        }
+    }
+}
+
 /// Provides lookup knowledge for primes.
 pub fn nth_prime_lookup(n: u64) -> Option<u64> {
     (&[
@@ -228,14 +244,34 @@ pub fn nth_prime_lookup(n: u64) -> Option<u64> {
 }
 
 /// Gets the last prime in lookup table.
-pub fn last_in_prime_lookup() -> u64 {
+pub fn last_in_prime_lookup() -> (u64, u64) {
     let mut i = 0;
     let mut last: Option<u64> = None;
-    while let Some(n) = prime_lookup(i) {
+    while let Some(n) = nth_prime_lookup(i) {
         i += 1;
         last = Some(n)
     }
-    last.unwrap_or(0)
+    (last.unwrap_or(0), i)
+}
+
+/// Returns `true` if `n` is a prime.
+pub fn prime_with_lookup(n: u64) -> bool {
+    if n < 2 {return false};
+    let mut i = 0;
+    let mut last: Option<u64> = None;
+    while let Some(p) = nth_prime_lookup(i) {
+        if p == n {return true};
+        if n % p == 0 {return false};
+        last = Some(p);
+        if p > n {return false};
+        i += 1;
+    }
+    if let Some(last) = last {
+        for i in last..n {
+            if n % i == 0 {return false};
+        }
+    }
+    true
 }
 
 /// Returns `true` if `n` is a prime.
@@ -251,14 +287,14 @@ pub fn prime(n: u64) -> bool {
 pub fn count_primes_with_lookup(x: u64) -> u64 {
     let mut n = 0;
     let mut last: Option<u64> = None;
-    while let Some(i) = prime_lookup(n) {
+    while let Some(i) = nth_prime_lookup(n) {
         if i >= x {return n};
         n += 1;
         last = Some(i);
     }
     if let Some(last) = last {
-        for i in last..x {
-            if prime(i) {n += 1}
+        for i in last + 1..x {
+            if prime_with_lookup(i) {n += 1}
         }
     }
     n
