@@ -101,7 +101,7 @@ impl Algexeno {
             Orig(2) => Const(0),
             Orig(x) if prime(*x) => {
                 Bin(Add, Box::new((
-                    Const(1), Orig(count_primes(*x)).eval()
+                    Const(1), Orig(count_primes(*x) + 1).eval()
                 ))).eval()
             }
             Orig(x) => {
@@ -249,7 +249,8 @@ pub fn prime(n: u64) -> bool {
 
 /// Counts primes below `x`.
 pub fn count_primes(x: u64) -> u64 {
-    let mut n = 1;
+    if x <= 2 {return 0};
+    let mut n = 0;
     for i in 2..x {
         if prime(i) {n += 1}
     }
