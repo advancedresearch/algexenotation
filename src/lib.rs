@@ -193,6 +193,40 @@ pub fn hyperprime(n: u64) -> u64 {
     }
 }
 
+/// Determines whether `p` is a prime using Fermat's primality test.
+pub fn fermat_prime(p: u64) -> bool {
+    if p < 2 {return false}
+    for i in 2..p-1 {
+        if !fermat(i, p) {return false}
+    }
+    true
+}
+
+/// Fermat primality set using `a` as witness and `p` as prime.
+pub fn fermat(a: u64, p: u64) -> bool {
+    (a % p) == 0 || modexp(a, p - 1, p) == 1
+}
+
+/// Modulus multiplication.
+pub fn modmul(a: u64, b: u64, m: u64) -> u64 {
+    ((a % m) * (b % m)) % m
+}
+
+/// Modulus exponentiation.
+pub fn modexp(a: u64, b: u64, m: u64) -> u64 {
+    let mut s = 1;
+    let mut b = b;
+    let mut base = a % m;
+    for _ in 0..b {
+        if b % 2 == 1 {
+            s = (s * base) % m;
+        }
+        b = b >> 1;
+        base = (base * base) % m;
+    }
+    s
+}
+
 /// Macro for Algexenotation.
 ///
 /// - `x`: hyperprime
