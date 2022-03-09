@@ -174,7 +174,8 @@ fn count_primes(x: u64) -> u64 {
     n
 }
 
-fn hyperprime(n: u64) -> u64 {
+/// Computes a hyperprime.
+pub fn hyperprime(n: u64) -> u64 {
     if n == 0 {2}
     else {
         let p = hyperprime(n - 1) + 1;
