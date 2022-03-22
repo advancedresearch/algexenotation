@@ -367,6 +367,29 @@ pub fn modexp(a: u64, b: u64, m: u64) -> u64 {
     s
 }
 
+/// Computes the mask for a number that tells which bit
+/// can be flipped to change it into a prime.
+pub fn mask(x: u64, n: u64) -> u64 {
+    let mut m = 0;
+    for i in 0..n {
+        if prime_with_lookup(x ^ (1 << i)) {
+            m |= 1 << i;
+        }
+    }
+    m
+}
+
+/// Returns the lowest bit that can change
+/// a number into a prime, if any.
+pub fn lbit(x: u64, n: u64) -> Option<u64> {
+    for i in 0..n {
+        if prime_with_lookup(x ^ (1 << i)) {
+            return Some(i);
+        }
+    }
+    None
+}
+
 /// Macro for Algexenotation.
 ///
 /// - `x`: hyperprime
