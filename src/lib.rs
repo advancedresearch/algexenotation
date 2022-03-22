@@ -50,6 +50,7 @@ use Op::*;
 use std::fmt;
 
 mod primes;
+mod hyperprimes;
 
 /// Binary operator.
 #[derive(Debug, PartialEq, Copy, Clone)]
@@ -290,19 +291,8 @@ pub fn hyperprime(n: u64) -> u64 {
 /// Provides lookup knowledge of fast hyperprime.
 pub fn fast_hyperprime_lookup(n: u64) -> Option<(u64, u64)> {
     match n {
-        0 => Some((2, 2)),
-        1 => Some((3, 3)),
-        2 => Some((5, 4)),
-        3 => Some((11, 6)),
-        4 => Some((31, 12)),
-        5 => Some((127, 32)),
-        6 => Some((709, 128)),
-        7 => Some((5381, 710)),
-        8 => Some((52711, 5382)),
-        9 => Some((648391, 52712)),
-        10 => Some((9737333, 648392)),
-        11 => Some((174440041, 9737334)),
-        _ => None,
+        0 => Some((hyperprimes::DATA[0], hyperprimes::DATA[0])),
+        n => Some((hyperprimes::DATA[n as usize], hyperprimes::DATA[(n - 1) as usize] + 1)),
     }
 }
 
