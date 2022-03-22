@@ -97,7 +97,7 @@ impl Algexeno {
                     (Const(a), Const(b)) => Const(a + b).original(),
                     (Const(1), b) => {
                         if let Orig(b) = b.original() {
-                            Orig(nth_prime_with_lookup(b - 1))
+                            if b == 0 {Orig(2)} else {Orig(nth_prime_with_lookup(b - 1))}
                         } else {unreachable!()}
                     }
                     (Const(a), b) => {
