@@ -377,6 +377,7 @@ pub fn modexp(a: u64, b: u64, m: u64) -> u64 {
 macro_rules! ax {
     ( $x:literal % ) => {Algexeno::Orig($x)};
     ( $x:literal ) => {Algexeno::Const($x)};
+    ( $x:ident % ) => {Algexeno::Orig($x)};
     ( $x:ident ) => {Algexeno::Const($x)};
     ( ( $x:tt + $($y:tt)+ ) ) => {Algexeno::Bin(Op::Add, Box::new((ax!($x), ax!($($y)+))))};
     ( $x0:tt $x1:tt + $($y:tt)+ ) => {Algexeno::Bin(Op::Add, Box::new((ax!($x0 $x1), ax!($($y)+))))};
