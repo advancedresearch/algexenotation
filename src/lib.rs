@@ -95,6 +95,7 @@ impl Algexeno {
             Bin(Add, ab) => {
                 match (&ab.0, &ab.1) {
                     (Const(a), Const(b)) => Const(a + b).original(),
+                    (Const(0), b) => b.original(),
                     (Const(1), b) => {
                         if let Orig(b) = b.original() {
                             if b == 0 {Orig(1)} else {Orig(nth_prime_with_lookup(b - 1))}
@@ -573,5 +574,30 @@ mod tests {
         assert_eq!(nth_prime_with_lookup(2), 5);
         assert_eq!(nth_prime_with_lookup(3), 7);
         assert_eq!(nth_prime_with_lookup(4), 11);
+    }
+
+    #[test]
+    fn test_sequences() {
+        // Hyperprime sequence.
+        assert_eq!(ax!(0 + 0%).original(), Orig(0));
+        assert_eq!(ax!(1 + 0%).original(), Orig(1));
+        assert_eq!(ax!(2 + 0%).original(), Orig(2));
+        assert_eq!(ax!(3 + 0%).original(), Orig(3));
+        assert_eq!(ax!(4 + 0%).original(), Orig(5));
+        assert_eq!(ax!(5 + 0%).original(), Orig(11));
+        assert_eq!(ax!(6 + 0%).original(), Orig(31));
+
+        // Natural sequence.
+        assert_eq!(ax!(0 + 0%).original(), Orig(0));
+        assert_eq!(ax!(0 + 1%).original(), Orig(1));
+        assert_eq!(ax!(0 + 2%).original(), Orig(2));
+        assert_eq!(ax!(0 + 3%).original(), Orig(3));
+        assert_eq!(ax!(0 + 4%).original(), Orig(4));
+
+        // Prime sequence.
+        assert_eq!(ax!(1 + 1%).original(), Orig(2));
+        assert_eq!(ax!(1 + 2%).original(), Orig(3));
+        assert_eq!(ax!(1 + 3%).original(), Orig(5));
+        assert_eq!(ax!(1 + 4%).original(), Orig(7));
     }
 }
