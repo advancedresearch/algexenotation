@@ -207,6 +207,23 @@ pub fn nth_prime_with_lookup(n: u64) -> u64 {
     }
 }
 
+/// Gets the nth prime with lookup table and Miller-Rabin hash check.
+pub fn nth_prime_with_lookup_and_miller_rabin(n: u64) -> u64 {
+    if let Some(x) = nth_prime_lookup(n) {x}
+    else {
+        let (mut p, mut i) = last_in_prime_lookup();
+        i += 1;
+        p += 1;
+        loop {
+            if prime_with_miller_rabin(p) {
+                if i == n {return p};
+                i += 1;
+            }
+            p += 1;
+        }
+    }
+}
+
 /// Gets the nth prime.
 pub fn nth_prime(n: u64) -> u64 {
     let mut p = 2;
