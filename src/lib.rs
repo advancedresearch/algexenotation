@@ -436,7 +436,7 @@ pub fn mask(x: u64, n: u64) -> u64 {
 /// a number into a prime, if any.
 pub fn lbit(x: u64, n: u64) -> Option<u64> {
     for i in 0..n {
-        if prime_with_lookup(x ^ (1 << i)) {
+        if prime_with_miller_rabin(x ^ (1 << i)) {
             return Some(i);
         }
     }
