@@ -251,6 +251,11 @@ pub fn prime_with_lookup(n: u64) -> bool {
 }
 
 /// Returns `true` if `n` is a prime.
+pub fn prime_with_miller_rabin(n: u64) -> bool {
+    num_prime::nt_funcs::is_prime64(n)
+}
+
+/// Returns `true` if `n` is a prime.
 pub fn prime(n: u64) -> bool {
     if n < 2 {return false};
     for i in 2..n {
