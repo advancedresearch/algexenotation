@@ -9,7 +9,7 @@ use algexenotation::*;
 
 fn main() {
     let n = last_lonely_lookup_index() + 1;
-    println!("{} => {},", n, lonely_with_lookup(n));
+    println!("{} => {},\n", n, lonely_with_lookup(n));
 }
 
 pub fn lonely_lookup(n: u64) -> Option<u64> {
@@ -75,6 +75,9 @@ pub fn lonely_lookup(n: u64) -> Option<u64> {
         58 => 3181,
         59 => 3181,
         60 => 3181,
+        61 => 6323,
+        62 => 6323,
+        63 => 6323,
         _ => return None,
     })
 }
@@ -99,12 +102,12 @@ pub fn lonely_with_lookup(n: u64) -> u64 {
     } else {
         let mut x = last_lonely_lookup_index();
         let y = lonely_lookup(x).unwrap();
-        if !prime_with_lookup(y ^ (1 << (n - 1))) {
+        if !prime_with_miller_rabin(y ^ (1 << (n - 1))) {
             return y;
         }
-        x = count_primes_with_lookup(y) + 1;
+        x = count_primes_with_lookup_and_miller_rabin(y) + 1;
         loop {
-            let y = nth_prime_with_lookup(x);
+            let y = nth_prime_with_lookup_and_miller_rabin(x);
             if lbit(y, n).is_none() {
                 return y;
             }
