@@ -298,6 +298,23 @@ pub fn count_primes_with_lookup(x: u64) -> u64 {
     n
 }
 
+/// Counts primes with lookup and Miller-Rabin hash check.
+pub fn count_primes_with_lookup_and_miller_rabin(x: u64) -> u64 {
+    let mut n = 0;
+    let mut last: Option<u64> = None;
+    while let Some(i) = nth_prime_lookup(n) {
+        if i >= x {return n};
+        n += 1;
+        last = Some(i);
+    }
+    if let Some(last) = last {
+        for i in last + 1..x {
+            if prime_with_miller_rabin(i) {n += 1}
+        }
+    }
+    n
+}
+
 /// Counts primes below `x`.
 pub fn count_primes(x: u64) -> u64 {
     if x <= 2 {return 0};
