@@ -98,7 +98,7 @@ impl Algexeno {
                     (Const(0), b) => b.original(),
                     (Const(1), b) => {
                         if let Orig(b) = b.original() {
-                            if b == 0 {Orig(1)} else {Orig(nth_prime_with_lookup(b - 1))}
+                            if b == 0 {Orig(1)} else {Orig(nth_prime_with_lookup_and_miller_rabin(b - 1))}
                         } else {unreachable!()}
                     }
                     (Const(a), b) => {
@@ -131,9 +131,9 @@ impl Algexeno {
             Const(x) => Const(*x),
             Orig(0) | Orig(1) => self.clone(),
             Orig(2) => Const(0),
-            Orig(x) if prime_with_lookup(*x) => {
+            Orig(x) if prime_with_miller_rabin(*x) => {
                 Bin(Add, Box::new((
-                    Const(1), Orig(count_primes_with_lookup(*x) + 1).eval()
+                    Const(1), Orig(count_primes_with_lookup_and_miller_rabin(*x) + 1).eval()
                 ))).eval()
             }
             Orig(x) => {
@@ -186,6 +186,29 @@ impl Algexeno {
                 }
             }
             Bin(Pow, _) | Bin(Mul, _) => self.clone(),
+        }
+    }
+
+    /// Gets the type.
+    ///
+    /// For more information see paper [Eleven Algexenic Types](https://github.com/advancedresearch/path_semantics/blob/master/papers-wip2/eleven-algexenic-types.pdf).
+    pub fn ty(&self) -> u8 {
+        match self {
+            Orig(_) => 0,
+            Const(_) => 1,
+            Bin(op, ab) => {
+                match (op, &ab.0, &ab.1) {
+                    (Op::Pow, Const(_), Const(_)) => 2,
+                    (Op::Mul, Const(_), Const(_)) => 3,
+                    (Op::Add, _, _) => 4,
+                    (Op::Mul, _, Const(_)) => 5,
+                    (Op::Mul, Const(_), _) => 6,
+                    (Op::Pow, Const(_), _) => 7,
+                    (Op::Mul, _, _) => 8,
+                    (Op::Pow, _, Const(_)) => 9,
+                    (Op::Pow, _, _) => 10,
+                }
+            }
         }
     }
 }
