@@ -3,6 +3,7 @@
 # Algexenotation Type Clock
 
 This shows the sequence of algexenotation
+of some Algexenic Type (there are 11 possible types 0-10),
 where the time elapsed is equal to `x` in milliseconds.
 
 */
