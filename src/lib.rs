@@ -202,6 +202,13 @@ pub enum Algexeno {
     Bin(Op, Box<(Algexeno, Algexeno)>),
 }
 
+fn needs_parens(x: &Algexeno) -> bool {
+    match x {
+        Orig(_) | Const(_) | Bin(Add, _) => false,
+        _ => true
+    }
+}
+
 impl fmt::Display for Algexeno {
     fn fmt(&self, w: &mut fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         match self {
@@ -209,7 +216,13 @@ impl fmt::Display for Algexeno {
             Const(x) => write!(w, "{}", x),
             Bin(Add, ab) => write!(w, "({}+{})", ab.0, ab.1),
             Bin(Mul, ab) => write!(w, "{}*{}", ab.0, ab.1),
-            Bin(Pow, ab) => write!(w, "{}^{}", ab.0, ab.1),
+            Bin(Pow, ab) => {
+                if needs_parens(&ab.1) {
+                    write!(w, "{}^({})", ab.0, ab.1)
+                } else {
+                    write!(w, "{}^{}", ab.0, ab.1)
+                }
+            }
         }
     }
 }
