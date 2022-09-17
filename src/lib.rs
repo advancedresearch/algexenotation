@@ -303,13 +303,55 @@ impl Algexeno {
                 // Get the divisor that is pure power and multiplication expressions.
                 let y = pmd(*x);
                 let mut x = x / y;
-                let mut i = 2;
+                let mut i = 5;
                 let mut k = 0;
 
                 let mut expr: Option<Algexeno> = match y {
                     1 => None,
                     y => fact(y)
                 };
+
+                while x % 2 == 0 {
+                    x >>= 1;
+                    k += 1;
+                }
+                if k > 0 {
+                    let arg = if k == 1 { Const(0) } else {
+                        Bin(Pow, Box::new((
+                            Const(0),
+                            Orig(k).eval()
+                        ))).eval()
+                    };
+                    if let Some(left) = expr {
+                        expr = Some(Bin(Mul, Box::new((
+                            left, arg
+                        ))));
+                    } else {
+                        expr = Some(arg);
+                    }
+                    k = 0;
+                }
+
+                while x % 3 == 0 {
+                    x /= 3;
+                    k += 1;
+                }
+                if k > 0 {
+                    let arg = if k == 1 { Const(1) } else {
+                        Bin(Pow, Box::new((
+                            Const(1),
+                            Orig(k).eval()
+                        ))).eval()
+                    };
+                    if let Some(left) = expr {
+                        expr = Some(Bin(Mul, Box::new((
+                            left, arg
+                        ))));
+                    } else {
+                        expr = Some(arg);
+                    }
+                    k = 0;
+                }
 
                 loop {
                     if x % i == 0 {
@@ -332,9 +374,34 @@ impl Algexeno {
                             }
                         }
                         k = 0;
-                        i += 1;
+                        i += 2;
 
-                        if x == 1 {break}
+                        if x == 1 || i > x {break}
+                    }
+
+                    if x % i == 0 {
+                        x /= i;
+                        k += 1;
+                    } else {
+                        if k > 0 {
+                            let arg = if k == 1 { Orig(i).eval() } else {
+                                Bin(Pow, Box::new((
+                                    Orig(i).eval(),
+                                    Orig(k).eval()
+                                ))).eval()
+                            };
+                            if let Some(left) = expr {
+                                expr = Some(Bin(Mul, Box::new((
+                                    left, arg
+                                ))));
+                            } else {
+                                expr = Some(arg);
+                            }
+                        }
+                        k = 0;
+                        i += 4;
+
+                        if x == 1 || i > x {break}
                     }
                 }
 

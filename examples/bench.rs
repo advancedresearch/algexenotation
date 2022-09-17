@@ -2,7 +2,7 @@ use algexenotation::Algexeno;
 
 fn main() {
     let mut x = 0;
-    let n = 200_000;
+    let n = 100_000;
     let mut c = 0;
     loop {
         let y = Algexeno::Orig(x).eval();
