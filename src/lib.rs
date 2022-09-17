@@ -177,8 +177,8 @@ use Op::*;
 
 use std::fmt;
 
-mod primes;
-mod hyperprimes;
+pub mod primes;
+pub mod hyperprimes;
 
 /// Binary operator.
 #[derive(Debug, PartialEq, Copy, Clone)]
