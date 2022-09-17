@@ -607,6 +607,61 @@ pub fn lbit(x: u64, n: u64) -> Option<u64> {
     None
 }
 
+/// Returns `true` if number consists of multiplication
+/// expressions only in Algexenotation.
+pub fn algexeno_mul(n: u64) -> bool {
+    if n < 2 {return true};
+    let mut n = n;
+    for &h in hyperprimes::DATA {
+        if h > n {break};
+        let mut m = 0;
+        while n % h == 0 {
+            n /= h;
+            m += 1;
+        }
+        if m == 0 {continue}
+        if m != 1 {return false}
+        if !algexeno_mul(m) {return false}
+    }
+    n == 1
+}
+
+/// Returns `true` if number consists of power
+/// expressions only in Algexenotation.
+pub fn algexeno_pow(n: u64) -> bool {
+    if n < 2 {return true};
+    let mut n = n;
+    for &h in hyperprimes::DATA {
+        if h > n {break};
+        let mut m = 0;
+        while n % h == 0 {
+            n /= h;
+            m += 1;
+        }
+        if m == 0 {continue}
+        if n != 1 {return false}
+        if !algexeno_pow(m) {return false}
+    }
+    n == 1
+}
+
+/// Returns `true` if number consists of
+/// multiplication or power expressions only in Algexenotation.
+pub fn algexeno_pow_mul(n: u64) -> bool {
+    if n < 2 {return true};
+    let mut n = n;
+    for &h in hyperprimes::DATA {
+        if h > n {break};
+        let mut m = 0;
+        while n % h == 0 {
+            n /= h;
+            m += 1;
+        }
+        if !algexeno_pow_mul(m) {return false}
+    }
+    n == 1
+}
+
 /// Macro for Algexenotation.
 ///
 /// - `x`: hyperprime
