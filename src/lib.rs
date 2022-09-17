@@ -621,9 +621,28 @@ pub fn algexeno_mul(n: u64) -> bool {
         }
         if m == 0 {continue}
         if m != 1 {return false}
-        if !algexeno_mul(m) {return false}
     }
     n == 1
+}
+
+/// Returns divisor of number that consists of multiplication
+/// expressions only in Algexenotation.
+pub fn md(n: u64) -> u64 {
+    if n < 2 {return n};
+    let mut n = n;
+    let mut res = 1;
+    for &h in hyperprimes::DATA {
+        if h > n {break};
+        let mut m = 0;
+        let mut r = 1;
+        while n % h == 0 {
+            n /= h;
+            r *= h;
+            m += 1;
+        }
+        if m == 1 {res *= r}
+    }
+    res
 }
 
 /// Returns `true` if number consists of power
@@ -645,6 +664,31 @@ pub fn algexeno_pow(n: u64) -> bool {
     n == 1
 }
 
+/// Returns divisor of number that consists of power
+/// expressions only in Algexenotation.
+///
+/// Notice that there can be multiple power expressions,
+/// so the divisor is the product of all such expressions.
+/// This should not be confused with `alexeno_pow`.
+pub fn pd(n: u64) -> u64 {
+    if n < 2 {return n};
+    let mut n = n;
+    let mut res = 1;
+    for &h in hyperprimes::DATA {
+        if h > n {break};
+        let mut m = 0;
+        let mut r = 1;
+        while n % h == 0 {
+            n /= h;
+            r *= h;
+            m += 1;
+        }
+        if m == 0 {continue}
+        if algexeno_pow(m) {res *= r}
+    }
+    res
+}
+
 /// Returns `true` if number consists of
 /// multiplication or power expressions only in Algexenotation.
 pub fn algexeno_pow_mul(n: u64) -> bool {
@@ -660,6 +704,26 @@ pub fn algexeno_pow_mul(n: u64) -> bool {
         if !algexeno_pow_mul(m) {return false}
     }
     n == 1
+}
+
+/// Returns divisor of number that consists of
+/// multiplication or power expressions only in Algexenotation.
+pub fn pmd(n: u64) -> u64 {
+    if n < 2 {return n};
+    let mut n = n;
+    let mut res = 1;
+    for &h in hyperprimes::DATA {
+        if h > n {break};
+        let mut m = 0;
+        let mut r = 1;
+        while n % h == 0 {
+            n /= h;
+            r *= h;
+            m += 1;
+        }
+        if algexeno_pow_mul(m) {res *= r}
+    }
+    res
 }
 
 /// Macro for Algexenotation.
