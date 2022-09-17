@@ -278,10 +278,39 @@ impl Algexeno {
                 ))).eval()
             }
             Orig(x) => {
-                let mut x = *x;
+                fn fact(mut x: u64) -> Option<Algexeno> {
+                    let mut expr = None;
+                    for (i, &h) in hyperprimes::DATA.iter().enumerate() {
+                        if h > x {break}
+                        let mut m = 0;
+                        while x % h == 0 {
+                            x /= h;
+                            m += 1;
+                        }
+                        if m == 0 {continue}
+                        let arg = if m == 1 { Const(i as u64) } else {
+                            Bin(Pow, Box::new((Const(i as u64), fact(m).unwrap())))
+                        };
+                        if let Some(left) = expr {
+                            expr = Some(Bin(Mul, Box::new((left, arg))));
+                        } else {
+                            expr = Some(arg);
+                        }
+                    }
+                    expr
+                }
+
+                // Get the divisor that is pure power and multiplication expressions.
+                let y = pmd(*x);
+                let mut x = x / y;
                 let mut i = 2;
                 let mut k = 0;
-                let mut expr: Option<Algexeno> = None;
+
+                let mut expr: Option<Algexeno> = match y {
+                    1 => None,
+                    y => fact(y)
+                };
+
                 loop {
                     if x % i == 0 {
                         x /= i;
