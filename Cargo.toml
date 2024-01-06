@@ -13,7 +13,7 @@ homepage = "https://github.com/advancedresearch/algexenotation"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-num-prime = {version = "0.2.0", features = ["big-table"]}
+num-prime = {version = "0.4.3", features = ["big-table"]}
 
 [dev-dependencies]
 rand = "0.8.5"
