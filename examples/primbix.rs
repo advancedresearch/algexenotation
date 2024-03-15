@@ -13,6 +13,7 @@
 112006043: 11
 491325707: 12
 2047857083: 13
+9869296583: 14
 
 */
 
@@ -20,8 +21,8 @@ use algexenotation::prime_with_miller_rabin as prime;
 
 fn main() {
     let n: u64 = 1_000_000_000_000_000;
-    let mut depth = 13;
-    let mut x = 5827000000;
+    let mut depth = 14;
+    let mut x = 19_740_000_000;
     loop {
         if x >= n {break}
 
