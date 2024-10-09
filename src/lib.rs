@@ -822,6 +822,53 @@ pub fn pmd(n: u64) -> u64 {
     res
 }
 
+/// Calculates the primbix value of a number.
+///
+/// For more information, see [paper](https://github.com/advancedresearch/path_semantics/blob/master/papers-wip2/primbix.pdf).
+pub fn primbix(x: u64) -> u64 {
+    use prime_with_miller_rabin as prime;
+
+    if !prime(x) {return 0}
+    if x == 2 {return 1}
+    let x = (x - 1) >> 1;
+    for r in 2..(x >> 1) + 1 {
+        if x % r != 0 {continue}
+        if !prime(r) {return 1}
+
+        let s = x / r;
+        return if !prime(s) {1} else  {primbix(r) + primbix(s)}
+    }
+    1
+}
+
+/// Store primbix primes in a list.
+///
+/// The list is not sorted and might contain duplicates.
+pub fn primbix_primes(x: u64, v: &mut Vec<u64>) {
+    use prime_with_miller_rabin as prime;
+
+    if !prime(x) {return}
+    v.push(x);
+    if x == 2 {return}
+    let x = (x - 1) >> 1;
+    for r in 2..(x >> 1) + 1 {
+        if x % r != 0 {continue}
+        if !prime(r) {return}
+
+        let s = x / r;
+        if !prime(s) {return} else  {
+            primbix_primes(r, v);
+            primbix_primes(s, v);
+            return;
+        }
+    }
+}
+
+/// Composes two primes into a candidate for a new primbix.
+pub fn primbix_compose(a: u64, b: u64) -> Option<u64> {
+    a.checked_mul(b)?.checked_mul(2)?.checked_add(1)
+}
+
 /// Macro for Algexenotation.
 ///
 /// - `x`: hyperprime
