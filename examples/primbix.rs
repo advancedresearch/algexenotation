@@ -1,4 +1,13 @@
 /*
+# Minimum Primbix Sequence
+
+This example searches for new numbers in the minimum primbix sequence.
+
+Uses a single thread.
+
+*/
+
+/*
 
 2: 1
 13: 2
@@ -17,12 +26,12 @@
 
 */
 
-use algexenotation::prime_with_miller_rabin as prime;
+use algexenotation::primbix;
 
 fn main() {
     let n: u64 = 1_000_000_000_000_000;
     let mut depth = 14;
-    let mut x = 19_740_000_000;
+    let mut x = 25_000_000_000;
     loop {
         if x >= n {break}
 
@@ -39,18 +48,4 @@ fn main() {
 
         x += 1;
     }
-}
-
-pub fn primbix(x: u64) -> u64 {
-    if !prime(x) {return 0}
-    if x == 2 {return 1}
-    let x = (x - 1) >> 1;
-    for r in 2..(x >> 1) + 1 {
-        if x % r != 0 {continue}
-        if !prime(r) {return 1}
-
-        let s = x / r;
-        return if !prime(s) {1} else  {primbix(r) + primbix(s)}
-    }
-    1
 }
