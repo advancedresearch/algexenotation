@@ -5,6 +5,9 @@ as natural numbers with algebraic compression.
 Inspired by [Tic Xenotation](http://hyperstition.abstractdynamics.org/archives/003538.html).
 For more information, see [paper](https://github.com/advancedresearch/path_semantics/blob/master/papers-wip2/algexenotation.pdf).
 
+This library also contains general prime-related functions for use in galactic communication and meta-games,
+such as [Primbix](https://github.com/advancedresearch/path_semantics/blob/master/papers-wip2/primbix.pdf).
+
 ### Motivation
 
 - Model ordered Cartesian combinatorics
