@@ -99,143 +99,7 @@ impl Algexeno {
     pub fn eval(&self) -> Algexeno {
         match self {
             Const(x) => Const(*x),
-            Orig(0) | Orig(1) => self.clone(),
-            Orig(2) => Const(0),
-            Orig(x) if prime_with_miller_rabin(*x) => {
-                Bin(Add, Box::new((
-                    Const(1), Orig(count_primes_with_lookup_and_miller_rabin(*x) + 1).eval()
-                ))).eval()
-            }
-            Orig(x) => {
-                fn fact(mut x: u64) -> Option<Algexeno> {
-                    let mut expr = None;
-                    for (i, &h) in hyperprimes::DATA.iter().enumerate() {
-                        if h > x {break}
-                        let mut m = 0;
-                        while x % h == 0 {
-                            x /= h;
-                            m += 1;
-                        }
-                        if m == 0 {continue}
-                        let arg = if m == 1 { Const(i as u64) } else {
-                            Bin(Pow, Box::new((Const(i as u64), fact(m).unwrap())))
-                        };
-                        if let Some(left) = expr {
-                            expr = Some(Bin(Mul, Box::new((left, arg))));
-                        } else {
-                            expr = Some(arg);
-                        }
-                    }
-                    expr
-                }
-
-                // Get the divisor that is pure power and multiplication expressions.
-                let y = pmd(*x);
-                let mut x = x / y;
-                let mut i = 5;
-                let mut k = 0;
-
-                let mut expr: Option<Algexeno> = match y {
-                    1 => None,
-                    y => fact(y)
-                };
-
-                while x % 2 == 0 {
-                    x >>= 1;
-                    k += 1;
-                }
-                if k > 0 {
-                    let arg = if k == 1 { Const(0) } else {
-                        Bin(Pow, Box::new((
-                            Const(0),
-                            Orig(k).eval()
-                        ))).eval()
-                    };
-                    if let Some(left) = expr {
-                        expr = Some(Bin(Mul, Box::new((
-                            left, arg
-                        ))));
-                    } else {
-                        expr = Some(arg);
-                    }
-                    k = 0;
-                }
-
-                while x % 3 == 0 {
-                    x /= 3;
-                    k += 1;
-                }
-                if k > 0 {
-                    let arg = if k == 1 { Const(1) } else {
-                        Bin(Pow, Box::new((
-                            Const(1),
-                            Orig(k).eval()
-                        ))).eval()
-                    };
-                    if let Some(left) = expr {
-                        expr = Some(Bin(Mul, Box::new((
-                            left, arg
-                        ))));
-                    } else {
-                        expr = Some(arg);
-                    }
-                    k = 0;
-                }
-
-                loop {
-                    if x % i == 0 {
-                        x /= i;
-                        k += 1;
-                    } else {
-                        if k > 0 {
-                            let arg = if k == 1 { Orig(i).eval() } else {
-                                Bin(Pow, Box::new((
-                                    Orig(i).eval(),
-                                    Orig(k).eval()
-                                ))).eval()
-                            };
-                            if let Some(left) = expr {
-                                expr = Some(Bin(Mul, Box::new((
-                                    left, arg
-                                ))));
-                            } else {
-                                expr = Some(arg);
-                            }
-                        }
-                        k = 0;
-                        i += 2;
-
-                        if x == 1 || i > x {break}
-                    }
-
-                    if x % i == 0 {
-                        x /= i;
-                        k += 1;
-                    } else {
-                        if k > 0 {
-                            let arg = if k == 1 { Orig(i).eval() } else {
-                                Bin(Pow, Box::new((
-                                    Orig(i).eval(),
-                                    Orig(k).eval()
-                                ))).eval()
-                            };
-                            if let Some(left) = expr {
-                                expr = Some(Bin(Mul, Box::new((
-                                    left, arg
-                                ))));
-                            } else {
-                                expr = Some(arg);
-                            }
-                        }
-                        k = 0;
-                        i += 4;
-
-                        if x == 1 || i > x {break}
-                    }
-                }
-
-                if let Some(expr) = expr {expr} else {Orig(x)}
-            }
+            Orig(x) => fact(*x),
             Bin(Add, ab) => {
                 match (&ab.0, &ab.1) {
                     (Const(a), Const(b)) => Const(a + b),
@@ -279,6 +143,44 @@ impl Algexeno {
     }
 }
 
+/// Factorizes number into Algexeno form.
+pub fn fact(x: u64) -> Algexeno {
+    match x {
+        0 | 1 => return Orig(x),
+        2 => return Const(0),
+        x if prime_with_miller_rabin(x) => {
+            for (i, &p) in hyperprimes::DATA.iter().enumerate() {
+                if p == x {return Const(i as u64)}
+            }
+            return Bin(Add, Box::new((
+                Const(1), fact(count_primes_with_lookup_and_miller_rabin(x) + 1)
+            ))).eval()
+        }
+        _ => {}
+    }
+
+    let y = pmd(x);
+    let mut x = x / y;
+
+    let mut expr: Option<Algexeno> = match y {
+        1 => None,
+        y => pmd_fact(y)
+    };
+    if x == 1 {return expr.unwrap()};
+
+    for &p in primes::DATA {
+        x = fact_case(x, p, &mut expr);
+        if x == 1 {return expr.unwrap()};
+    }
+
+
+    let mut p = last_in_prime_lookup().0 + 2;
+    loop {
+        x = fact_case(x, p, &mut expr);
+        if x == 1 {return expr.unwrap()};
+        p += 2;
+    }
+}
 
 /// Factorizes case.
 ///
