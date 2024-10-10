@@ -279,6 +279,34 @@ impl Algexeno {
     }
 }
 
+
+/// Factorizes case.
+///
+/// Returns the reduced number of remaining factors.
+pub fn fact_case(x: u64, p: u64, expr: &mut Option<Algexeno>) -> u64 {
+    let mut x = x;
+    let mut k = 0;
+    while x % p == 0 {
+        x /= p;
+        k += 1;
+    };
+    if k == 0 {return x};
+    let arg = if k == 1 { fact(p) } else {
+        Bin(Pow, Box::new((
+            fact(p),
+            fact(k)
+        )))
+    };
+    if let Some(left) = expr {
+        *expr = Some(Bin(Mul, Box::new((
+            left.clone(), arg
+        ))));
+    } else {
+        *expr = Some(arg);
+    }
+    x
+}
+
 /// Gets the nth prime with lookup table.
 pub fn nth_prime_with_lookup(n: u64) -> u64 {
     if let Some(x) = nth_prime_lookup(n) {x}
