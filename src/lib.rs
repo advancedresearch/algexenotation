@@ -589,12 +589,14 @@ pub fn algexeno_pow(n: u64) -> bool {
     n == 1
 }
 
-/// Returns divisor of number that consists of power
-/// expressions only in Algexenotation.
+/// Returns divisor of number that consists only of power
+/// expressions in Algexenotation.
 ///
 /// Notice that there can be multiple power expressions,
 /// so the divisor is the product of all such expressions.
 /// This should not be confused with `alexeno_pow`.
+///
+/// The name `pd` stands for `power-divisor`.
 pub fn pd(n: u64) -> u64 {
     if n < 2 {return n};
     let mut n = n;
