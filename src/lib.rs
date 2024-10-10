@@ -633,14 +633,23 @@ pub fn algexeno_pow_mul(n: u64) -> bool {
     n == 1
 }
 
-/// Returns divisor of number that consists of
-/// multiplication or power expressions only in Algexenotation.
+/// Returns divisor of number that consists only of
+/// multiplication or power expressions in Algexenotation.
+///
+/// Addition in Algexenotation does not contribute to the divisor.
+/// Addition in the power, e.g. `2'^7'` does not contribute,
+/// because `7' = (1+0^0)` which uses addition.
+///
+/// There is an invariant `pmd(a * b) = pmd(a) * pmd(b)`.
+///
+/// The name `pmd` stands for `power-multiply-divisor`.
 pub fn pmd(n: u64) -> u64 {
     if n < 2 {return n};
     let mut n = n;
     let mut res = 1;
     for &h in hyperprimes::DATA {
         if h > n {break};
+        // Counts the number the hyperprime is multiplied.
         let mut m = 0;
         let mut r = 1;
         while n % h == 0 {
