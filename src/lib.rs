@@ -662,6 +662,31 @@ pub fn pmd(n: u64) -> u64 {
     res
 }
 
+/// Factorizes using only multiplication and power in Algexenotation.
+///
+/// If a number is returned, then it corresponds to `pmd`.
+pub fn pmd_fact(mut x: u64) -> Option<Algexeno> {
+    let mut expr = None;
+    for (i, &h) in hyperprimes::DATA.iter().enumerate() {
+        if h > x {break}
+        let mut m = 0;
+        while x % h == 0 {
+            x /= h;
+            m += 1;
+        }
+        if m == 0 {continue}
+        let arg = if m == 1 { Const(i as u64) } else {
+            Bin(Pow, Box::new((Const(i as u64), pmd_fact(m).unwrap())))
+        };
+        if let Some(left) = expr {
+            expr = Some(Bin(Mul, Box::new((left, arg))));
+        } else {
+            expr = Some(arg);
+        }
+    }
+    expr
+}
+
 /// Calculates the primbix value of a number.
 ///
 /// For more information, see [paper](https://github.com/advancedresearch/path_semantics/blob/master/papers-wip2/primbix.pdf).
