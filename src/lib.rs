@@ -8,6 +8,7 @@ use std::fmt;
 
 pub mod primes;
 pub mod hyperprimes;
+pub mod m3;
 
 /// Binary operator.
 #[derive(Debug, PartialEq, Copy, Clone)]
