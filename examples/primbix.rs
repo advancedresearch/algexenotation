@@ -51,7 +51,7 @@ pub fn min_primbix(start: u64, end: u64, threads: u8) -> (u64, u64) {
 
             let y = primbix(x);
             if y > m.0 {
-                println!("{}: {}, {}", id, y, x);
+                println!("{}: {}, {} ({}%)", id, y, x, (100 * (x - start)) / (end - start));
                 m = (y, x)
             }
         }
