@@ -288,6 +288,7 @@ pub fn prime_with_lookup(n: u64) -> bool {
 }
 
 /// Returns `true` if `n` is a prime.
+#[inline(always)]
 pub fn prime_with_miller_rabin(n: u64) -> bool {
     num_prime::nt_funcs::is_prime64(n)
 }
@@ -618,23 +619,49 @@ pub fn pmd_fact(mut x: u64) -> Option<Algexeno> {
     expr
 }
 
+/// Returns smallest divisible prime less than input, if any.
+///
+/// Returns `None` if input is a `0`, `1` or a prime.
+///
+/// Used as building block for fast factorization
+/// or for sub-formulas e.g. product of two primes `r * s`.
+///
+/// Optimizes square number factorization using recursive call.
+///
+/// The most expensive part of this algorithm is iteration over
+/// odd numbers up to the square root.
+/// This search guaranteed to find a prime, because primes occur
+/// before any composite number divisible by primes.
+#[inline]
+pub fn prime_fact(x: u64) -> Option<u64> {
+    use prime_with_miller_rabin as prime;
+
+    if x <= 3 {return None}
+    if x % 2 == 0 {return Some(2)}
+    if prime(x) {return None}
+    let end = x.isqrt();
+    if x % end == 0 {
+        return Some(prime_fact(end).unwrap_or(end))
+    }
+    for r in (3..end).step_by(2) {
+        if x % r == 0 {return Some(r)}
+    }
+    None
+}
+
 /// Calculates the primbix value of a number.
 ///
 /// For more information, see [paper](https://github.com/advancedresearch/path_semantics/blob/master/papers-wip2/primbix.pdf).
 pub fn primbix(x: u64) -> u64 {
     use prime_with_miller_rabin as prime;
 
-    if !prime(x) {return 0}
+    if !prime(x) || x <= 1 {return 0}
     if x == 2 {return 1}
     let x = (x - 1) >> 1;
-    for r in 2..(x >> 1) + 1 {
-        if x % r != 0 {continue}
-        if !prime(r) {return 1}
-
+    if let Some(r) = prime_fact(x) {
         let s = x / r;
-        return if !prime(s) {1} else  {primbix(r) + primbix(s)}
-    }
-    1
+        if !prime(s) {1} else {primbix(r) + primbix(s)}
+    } else {1}
 }
 
 /// Store primbix primes in a list.
