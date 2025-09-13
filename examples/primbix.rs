@@ -31,10 +31,13 @@ use algexenotation::primbix;
 */
 
 fn main() {
-    let tasks: Vec<u64> = (10000..11000).step_by(100).collect();
+    /*
+    let tasks: Vec<u64> = (17600..17700).step_by(100).collect();
     for &t in &tasks {
         task(t * 1_000_000_000);
     }
+    */
+    task(80600 * 1_000_000_000);
 }
 
 pub fn task(start: u64) {
